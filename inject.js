@@ -113,7 +113,7 @@ async function ask() {
     question = sections[2];
   }
 
-  let parts = longText ? splitTextIntoParts(longText, 20) : [question];
+  let parts = longText ? splitTextIntoParts(longText, 300) : [question];
   console.log('split to parts = ' + parts.length);
   let outputs = [];
 
