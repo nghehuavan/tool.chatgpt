@@ -76,7 +76,8 @@ async function ask(question) {
   let loading = await ensureLoading();
   await ensureLoadingCompleted(loading);
   var codeEle = querySelectorShadow(document.body, 'cib-code-block[clipboard-data]');
-  console.log(codeEle);
+  return codeEle.getAttribute("clipboard-data")
 }
 
-await ask('get document by id?\n please answer short code block only');
+let result = await ask('get document by id?\n please answer short code block only');
+console.log(result);
