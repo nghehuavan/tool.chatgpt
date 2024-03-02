@@ -83,7 +83,7 @@ function getSections(text) {
 }
 
 function splitTextIntoParts(text, linesPerPart) {
-  let lines = text.split('\n');
+  let lines = text.split('\n').map(item=>item.trim());
   let parts = [];
   for (let i = 0; i < lines.length; i += linesPerPart) {
     let part = lines.slice(i, i + linesPerPart);
@@ -137,6 +137,5 @@ async function ask() {
 }
 
 let result = await ask();
-console.log(result.join('\n'));
-await navigator.clipboard.writeText(result.join('\n'));
-alert('done');
+let out = prompt("copy?", result.join('\n'));
+console.log(out);
