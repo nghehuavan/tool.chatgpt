@@ -65,77 +65,21 @@ function ensureCodeBlock() {
   return ensureElement('cib-code-block[clipboard-data]');
 }
 
-function getSections(text) {
-  let lines = text.split('\n');
-  let sections = [];
-  var sectionLine = [];
-  for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-    if (line.startsWith('###')) {
-      sections.push(sectionLine.join('\n'));
-      sectionLine = [];
-    } else {
-      sectionLine.push(line);
-    }
-  }
-  if (sectionLine.length > 0) sections.push(sectionLine.join('\n'));
-  return sections;
-}
-
-function splitTextIntoParts(text, linesPerPart) {
-  let lines = text.split('\n').map(item=>item.trim());
-  let parts = [];
-  for (let i = 0; i < lines.length; i += linesPerPart) {
-    let part = lines.slice(i, i + linesPerPart);
-    parts.push(part.join('\n'));
-  }
-  return parts;
-}
-
-let oldText;
 async function ask() {
   await ensureNoteBook();
   let input = await ensureInput();
-  let button = await ensureButton();
-  oldText = input.value;
-  let preText;
-  let longText;
-  let question;
-  let sections = getSections(oldText);
-  if (sections.length == 1) {
-    question = sections[0];
-  } else if (sections.length == 2) {
-    longText = sections[0];
-    question = sections[1];
-  } else if (sections.length == 3) {
-    preText = sections[0];
-    longText = sections[1];
-    question = sections[2];
-  }
+  input.value = input.value.split('\n').map(i=>i.trim()).join('\n');
 
-  let parts = longText ? splitTextIntoParts(longText, 300) : [question];
-  console.log('split to parts = ' + parts.length);
-  let outputs = [];
+  let button = await ensureButton();  
+  button.click();
 
-  for (let part of parts) {
-    input.value = preText ?? '' + '\n' + part + '\n' + question ?? '';
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-
-    button.click();
-
-    let loading = await ensureLoading();
-    await ensureLoadingCompleted(loading);
-    let codeEle = querySelectorShadow(document.body, 'cib-code-block[clipboard-data]');
-    let result = codeEle.getAttribute('clipboard-data');
-    outputs.push(result);
-  }
-
+  let loading = await ensureLoading();
+  await ensureLoadingCompleted(loading);
   let codeEle = querySelectorShadow(document.body, 'cib-code-block[clipboard-data]');
-  codeEle.setAttribute('clipboard-data', outputs.join('\n'));
-  input.value = oldText;
-  return outputs;
+  let result = codeEle.getAttribute('clipboard-data');
+  return result;
 }
 
 let result = await ask();
-let out = prompt("copy?", result.join('\n'));
-console.log(out);
+console.log(result);
+alert('done');
