@@ -114,7 +114,7 @@ async function ask() {
   }
 
   let parts = longText ? splitTextIntoParts(longText, 300) : [question];
-  console.log('split to parts' + parts.length);
+  console.log('split to parts = ' + parts.length);
   let outputs = [];
 
   for (let part of parts) {
